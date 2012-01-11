@@ -19,8 +19,7 @@ var SNAKE = function() {
 			};
 			this.fruit = {
 				value : 1,
-				countdown: 0,
-				// intreval: 40,
+				countdown: 0,				
 				position : {
 					x : -1,
 					y : -1
@@ -31,7 +30,12 @@ var SNAKE = function() {
 			var canvas = document.getElementById('snake');  
 			this.blockSize = canvas.getAttribute('data-size') * 1;
 			
-			this.player.blocks  = [[this.blockSize,this.blockSize],[this.blockSize,this.blockSize],[this.blockSize,this.blockSize],[this.blockSize,this.blockSize],[this.blockSize,this.blockSize],[this.blockSize,this.blockSize],[this.blockSize,this.blockSize],[this.blockSize,this.blockSize]];
+			this.player.blocks  = new Array();
+
+			for (var i = 0; i <= 5; i++) {
+					this.player.blocks.push([this.blockSize,this.blockSize]);
+			};
+
 
 			this.width = canvas.getAttribute("width");
 			this.height = canvas.getAttribute("height");
@@ -85,6 +89,16 @@ var SNAKE = function() {
 		    this.ctx.fillText("Snake!", x, y);
 
 		},
+		draw_score_board : function(){
+		    var x = this.width / 2;
+		    var y = (this.height / 2) + 40;
+		 	
+		    this.ctx.font = "150pt Lucida Console";
+		    this.ctx.textAlign = "center";
+		    this.ctx.fillStyle = "rgba(84,84,84,.5)";
+		    this.ctx.fillText(this.player.score, x, y);
+
+		},
 		draw_game_over : function(){
 			var x = this.width / 2;
 		    var y = this.height / 2;
@@ -109,11 +123,16 @@ var SNAKE = function() {
 			for(var i in this.player.blocks){
 				var x = this.player.blocks[i][0]
 				  , y = this.player.blocks[i][1];
-				this.ctx.fillStyle = "rgb(255,0,0)";
+				this.ctx.fillStyle = "rgb(238,238,238)";
 				this.ctx.fillRect(x,y,this.blockSize,this.blockSize);
+
+				this.ctx.fillStyle = "rgb(255,0,0)";
+				this.ctx.fillRect(x + 1,y + 1,this.blockSize - 1,this.blockSize - 2);
+
 			}
 		},
 		draw_board : function(){
+
 			this.ctx.fillStyle = "rgb(0,0,0)"; 
 	    	this.ctx.fillRect(0,0,this.width,this.height);
 	    	this.ctx.clearRect(this.blockSize,this.blockSize,this.width - (this.blockSize * 2),this.height - (this.blockSize * 2));
@@ -153,13 +172,14 @@ var SNAKE = function() {
 
 			if(this.status == "playing"){
 				this.draw_board();
+				this.draw_score_board();
 				this.draw_player();
 				this.draw_fruit();
 				this.move_player();			
 				this.detect_collision();
-				var difficulty = (45 / (this.player.score + 1)) + 45;
+				// var difficulty = (45 / (this.player.score + 1)) + 45;
 
-				this.t = setTimeout("SNAKE.frame()",  difficulty); //next frame
+				this.t = setTimeout("SNAKE.frame()",  70); //next frame
 			}
 		},
 		move_player : function(){
